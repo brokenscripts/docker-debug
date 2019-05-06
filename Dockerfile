@@ -17,7 +17,11 @@ RUN apt-get update \
         binutils \
         binwalk \
         python \
+        python-dev \
+        python-pip \
         python3 \
+        python3-pip \
+        python3-venv \
         git \
         xxd \
         ltrace \
@@ -25,13 +29,14 @@ RUN apt-get update \
         radare2 \
         openssl \
         procps \
-        python-pip \
-        python3-pip \
-        python-dev \
         libssl-dev \
         libffi-dev \
         build-essential \
         fuse \
+        libqt5core5a \
+        libqt5gui5 \
+        libqt5widgets5 \
+        libqt5network5 \
     && githubbase=https://github.com/ \
     && ghidra_ver=$(curl https://ghidra-sre.org/ | grep -oP "(?<=  )(ghidra.*zip)(?=</code>)") \
     && ghidra_ssh=$(curl https://ghidra-sre.org/ | grep -oP "(?<=<code>)(.*)(?=  )") \
@@ -52,6 +57,12 @@ RUN apt-get update \
     && cutteruri=$(curl -L https://github.com/radareorg/cutter/releases/latest | grep -oP "(?<=href=\"/)(radareorg.*AppImage)(?=\")") \
     && wget --progress=bar:force -O /usr/bin/cutter $githubbase$cutteruri \
     && chmod +x /usr/bin/cutter \
+    && pip install capstone --no-cache-dir \
+    && pip install ropgadget --no-cache-dir \
+    && pip install --upgrade pwntools --no-cache-dir \
+    && velesuri=$(curl -L https://github.com/codilime/veles/releases/latest | grep -oP "(?<=href=\"/)(codilime.*deb)(?=\")") \
+    && wget --progress=bar:force -O /tmp/veles.deb $githubbase$velesuri \
+    && dpkg -i /tmp/veles.deb \
     && rm -rf /var/lib/apt/lists/* \
         /var/cache/apt/archives \
         /tmp/* \
